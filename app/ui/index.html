@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CSB Model Optimizer</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<aside>
+  <div class="head">
+    <h1>Model Optimizer</h1>
+    <p class="mute">Makes a CS 1.6 server's downloads smaller: player-model animation packed or shared, and a <code>.gz</code> next to every file for fast download.</p>
+  </div>
+  <form id="form" class="scroll">
+    <label class="field">
+      <span>Game or fast-download folder</span>
+      <span class="pick"><input id="input" placeholder="…\cstrike or …\cstrike_downloads" spellcheck="false"><button type="button" data-pick="input">Browse</button></span>
+      <small id="inputNote" class="mute"></small>
+    </label>
+    <label class="field">
+      <span>Output folder (an optimized copy goes here)</span>
+      <span class="pick"><input id="output" spellcheck="false"><button type="button" data-pick="output">Browse</button></span>
+      <small id="outputNote" class="mute"></small>
+    </label>
+    <fieldset>
+      <legend>What to do</legend>
+      <label class="opt"><input type="checkbox" id="repack" checked><span><b>Pack animation</b> in every model. Same file name, same behaviour, any client.</span></label>
+      <label class="opt"><input type="checkbox" id="share" checked><span><b>Share animation</b> between player models: one <code>models/player/_anims/&lt;hash&gt;.mdl</code> per group. Send those files with the skins (list in the report).</span></label>
+      <label class="opt"><span class="lbl">gzip copies</span>
+        <select id="gzip"><option value="best" selected>gzip -9 (fast)</option><option value="zopfli">Zopfli (≈5% smaller, slow)</option><option value="off">none</option></select>
+      </label>
+      <label class="opt"><input type="checkbox" id="modelsOnly"><span>Only <code>models/</code> (skip maps, sounds, sprites)</span></label>
+    </fieldset>
+    <button id="run" class="primary" type="submit">Optimize</button>
+    <div id="progress" hidden>
+      <div class="bar"><i id="progressBar"></i></div>
+      <small id="progressText" class="mute"></small>
+    </div>
+    <p id="error" class="error" hidden></p>
+    <div id="summary" hidden></div>
+  </form>
+</aside>
+<main>
+  <nav class="tabs" id="tabs" hidden>
+    <button data-tab="overview" class="on">Before / after</button>
+    <button data-tab="files">Files</button>
+    <button data-tab="shared">Shared animation</button>
+    <button data-tab="warnings">Warnings <span id="warnCount" class="count"></span></button>
+  </nav>
+  <section id="empty" class="empty">
+    <div>
+      <h2>Pick a folder and press Optimize</h2>
+      <p class="mute">Nothing in the folder you pick is changed: the tool writes an optimized copy to the output folder, checks every rewritten model against its original, and shows what clients would download before and after.</p>
+      <ol class="mute">
+        <li>Upload the output folder to your fast-download host (the <code>.gz</code> files next to the others).</li>
+        <li>Put the same files on the game server.</li>
+        <li>If animation was shared, add the files from <code>shared_anims.txt</code> to the server's resource list.</li>
+      </ol>
+    </div>
+  </section>
+  <section id="overview" class="tab" hidden></section>
+  <section id="files" class="tab" hidden>
+    <div class="toolbar">
+      <input id="filter" placeholder="Filter files" spellcheck="false">
+      <label><input type="checkbox" id="changedOnly" checked> changed only</label>
+      <select id="sort"><option value="saved">biggest saving</option><option value="before">biggest before</option><option value="path">name</option></select>
+      <span id="fileCount" class="mute"></span>
+    </div>
+    <div id="fileList" class="list"></div>
+  </section>
+  <section id="shared" class="tab" hidden></section>
+  <section id="warnings" class="tab" hidden></section>
+</main>
+<script src="app.js"></script>
+</body>
+</html>

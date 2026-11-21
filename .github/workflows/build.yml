@@ -1,0 +1,42 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+      - uses: Swatinem/rust-cache@v2
+      - name: Test
+        run: cargo test --locked -p csb-mdl
+      - name: Clippy
+        run: cargo clippy --locked --all-targets -- -D warnings
+      - name: Build
+        run: cargo build --locked --release
+      - name: Package
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory dist | Out-Null
+          Copy-Item target/release/csb-model-optimizer.exe, target/release/mdlopt.exe, README.md, LICENSE dist/
+          Compress-Archive -Path dist/* -DestinationPath csb-model-optimizer-windows-x64.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: csb-model-optimizer-windows-x64
+          path: csb-model-optimizer-windows-x64.zip
+      - name: Release (tags only)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: csb-model-optimizer-windows-x64.zip
