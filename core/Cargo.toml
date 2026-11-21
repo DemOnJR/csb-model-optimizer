@@ -3,6 +3,7 @@ name = "csb-mdl"
 description = "GoldSrc studio model optimizer: animation repack, shared animation files, gzip"
 version.workspace = true
 edition.workspace = true
+rust-version.workspace = true
 license.workspace = true
 publish.workspace = true
 

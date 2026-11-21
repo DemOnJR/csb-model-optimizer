@@ -3,6 +3,7 @@ name = "csb-model-optimizer"
 description = "Shrinks a CS 1.6 server's downloads: model animation repack/share plus .gz copies"
 version.workspace = true
 edition.workspace = true
+rust-version.workspace = true
 license.workspace = true
 publish.workspace = true
 

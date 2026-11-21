@@ -495,7 +495,7 @@ pub fn run(input: &Path, output: &Path, opts: &Options, progress: Progress) -> R
             t.after_gz += f.after_gz;
         }
     }
-    cats.sort_by(|a, b| b.1.before.cmp(&a.1.before));
+    cats.sort_by_key(|c| std::cmp::Reverse(c.1.before));
     progress("done", 1, 1);
     let report = Report {
         input: input.display().to_string().trim_start_matches(r"\\?\").to_string(),
